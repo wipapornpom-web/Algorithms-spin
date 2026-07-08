@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithm Spin Challenge - Motion Only</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-orbs"><span></span><span></span><span></span></div>
+
+  <main class="app">
+    <section class="left-panel">
+      <div class="brand">
+        <div class="robot-logo">🤖</div>
+        <div>
+          <p class="eyebrow">Motion Only Edition</p>
+          <h1>Algorithm Spin Challenge</h1>
+          <p class="subtitle">เกมฝึกคิดเป็นลำดับ สำหรับ ป.1–ป.3</p>
+        </div>
+      </div>
+
+      <div class="wheel-card">
+        <div class="pointer">▼</div>
+        <canvas id="wheel" width="520" height="520" aria-label="วงล้อสุ่มภารกิจ"></canvas>
+        <div class="wheel-center">
+          <strong>SPIN</strong>
+          <small>โบกมือ</small>
+        </div>
+      </div>
+
+      <div class="gesture-help">
+        <div><b>👋 โบกมือกลางจอ</b><span>เริ่มเกม / หมุนวงล้อ / ยืนยัน</span></div>
+        <div><b>⬅️ ขยับซ้าย</b><span>เลือกคำตอบก่อนหน้า</span></div>
+        <div><b>➡️ ขยับขวา</b><span>เลือกคำตอบถัดไป</span></div>
+      </div>
+    </section>
+
+    <section class="right-panel">
+      <div class="camera-card">
+        <div class="cam-head">
+          <h2>กล้องส่องคนเล่น</h2>
+          <span id="cameraStatus">กำลังเปิดกล้อง...</span>
+        </div>
+        <div class="camera-wrap">
+          <video id="camera" autoplay playsinline muted></video>
+          <canvas id="motionCanvas" width="320" height="240"></canvas>
+          <div class="zone left">ซ้าย</div>
+          <div class="zone center">โบกมือ</div>
+          <div class="zone right">ขวา</div>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="score-row">
+          <div>คะแนน <strong id="score">0</strong></div>
+          <div>ภารกิจ <strong id="missionCount">0/5</strong></div>
+        </div>
+
+        <div id="screenHome" class="screen active">
+          <h2>ยืนหน้ากล้อง แล้วโบกมือเพื่อเริ่ม</h2>
+          <p>เกมนี้ไม่ใช้เมาส์ ไม่ต้องสัมผัสจอ ใช้การเคลื่อนไหวหน้ากล้องเท่านั้น</p>
+        </div>
+
+        <div id="screenMission" class="screen">
+          <p class="mission-type" id="missionType">ภารกิจ</p>
+          <h2 id="missionTitle">ชื่อภารกิจ</h2>
+          <p id="missionQuestion">คำถาม</p>
+          <div id="options" class="options"></div>
+          <p class="hint">ขยับซ้าย/ขวาเพื่อเลือก แล้วโบกมือกลางจอเพื่อยืนยัน</p>
+        </div>
+
+        <div id="screenResult" class="screen">
+          <h2 id="resultTitle">ผลลัพธ์</h2>
+          <p id="resultText">รายละเอียด</p>
+          <div class="stars" id="stars">⭐ ⭐ ⭐</div>
+          <p class="hint">โบกมือเพื่อหมุนภารกิจต่อไป</p>
+        </div>
+
+        <div id="screenEnd" class="screen">
+          <h2>จบเกมแล้ว เก่งมาก!</h2>
+          <p>คะแนนรวมของทีมคือ</p>
+          <div class="final-score" id="finalScore">0</div>
+          <div id="leaderboard" class="leaderboard"></div>
+          <p class="hint">โบกมือกลางจอเพื่อเริ่มใหม่</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast">พร้อมเล่นแล้ว</div>
+  <script src="script.js"></script>
+</body>
+</html>
