@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithm Spin Challenge - Mixed Motion</title>
+  <style>
+    *{box-sizing:border-box} html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:'Arial',sans-serif;background:#08112b;color:white;touch-action:none;user-select:none}
+    #camera{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);filter:saturate(1.1) brightness(.8);z-index:0}
+    #shade{position:fixed;inset:0;background:linear-gradient(135deg,rgba(45,76,255,.35),rgba(174,71,255,.25),rgba(255,217,73,.15));z-index:1;pointer-events:none}
+    #game{position:fixed;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;padding:24px}
+    .hud{position:fixed;top:14px;left:14px;right:14px;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:10px;pointer-events:none}
+    .badge{background:rgba(9,20,60,.75);border:3px solid rgba(255,255,255,.35);box-shadow:0 8px 22px rgba(0,0,0,.25);border-radius:24px;padding:10px 16px;font-weight:900;font-size:clamp(16px,2.5vw,24px)}
+    #pointer{position:fixed;width:34px;height:34px;border-radius:50%;background:#ffd93d;border:5px solid white;box-shadow:0 0 24px #ffd93d;z-index:8;transform:translate(-50%,-50%);display:none;pointer-events:none}
+    #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9;background:rgba(10,18,50,.86);border:3px solid rgba(255,255,255,.35);border-radius:28px;padding:12px 24px;text-align:center;font-size:clamp(18px,3vw,34px);font-weight:900;max-width:94%;box-shadow:0 10px 28px rgba(0,0,0,.35)}
+    #debug{position:fixed;bottom:8px;right:10px;z-index:10;font-size:12px;opacity:.65;background:rgba(0,0,0,.4);padding:6px 8px;border-radius:8px}
+    .screen{width:min(1100px,96vw);height:min(720px,86vh);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px}
+    .title{font-size:clamp(28px,5vw,64px);font-weight:1000;text-shadow:0 8px 20px rgba(0,0,0,.45);margin:0}.sub{font-size:clamp(17px,2.6vw,30px);font-weight:900;text-shadow:0 4px 12px rgba(0,0,0,.5)}
+    .wheelWrap{position:relative;width:min(72vw,520px);aspect-ratio:1}.pin{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:52px;z-index:4;filter:drop-shadow(0 4px 8px #000)}
+    #wheel{width:100%;height:100%;border-radius:50%;border:12px solid #fff;box-shadow:0 0 0 12px rgba(255,217,61,.6),0 18px 38px rgba(0,0,0,.4);background:conic-gradient(#50c7ff 0 36deg,#b967ff 36deg 72deg,#ffe15d 72deg 108deg,#ff78bf 108deg 144deg,#5affae 144deg 180deg,#6a89ff 180deg 216deg,#ffb347 216deg 252deg,#67e8f9 252deg 288deg,#d946ef 288deg 324deg,#facc15 324deg 360deg);display:grid;place-items:center;transition:transform 3s cubic-bezier(.12,.8,.18,1);position:relative;overflow:hidden}
+    #wheel:after{content:'🎡';font-size:90px;background:white;color:#111;border-radius:50%;width:34%;height:34%;display:grid;place-items:center;box-shadow:0 8px 22px rgba(0,0,0,.25)}
+    .cards{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}.card{width:140px;height:140px;background:rgba(255,255,255,.88);color:#102;display:grid;place-items:center;border-radius:26px;border:5px solid #fff;font-size:64px;box-shadow:0 10px 24px rgba(0,0,0,.3);position:relative}.card small{position:absolute;bottom:8px;font-size:18px;font-weight:900;color:#243}
+    .board{display:grid;grid-template-columns:repeat(5,82px);grid-template-rows:repeat(4,82px);gap:8px;background:rgba(9,20,60,.72);padding:14px;border-radius:26px;border:4px solid rgba(255,255,255,.5)}.cell{display:grid;place-items:center;border-radius:18px;background:rgba(255,255,255,.88);font-size:42px;color:#222}.wall{background:#635b76}.robot{background:#ffe15d!important}.goal{background:#65e9a7!important}.gem{background:#8be9ff!important}.danger{background:#ff8da1!important}
+    .overlayBtn{position:absolute;border:4px solid rgba(255,255,255,.9);background:rgba(255,255,255,.2);border-radius:22px;display:grid;place-items:center;font-size:60px;box-shadow:0 0 24px rgba(255,255,255,.25)}
+    .bigCenter{font-size:clamp(90px,17vw,180px);filter:drop-shadow(0 8px 15px rgba(0,0,0,.4))}.shake{animation:shake .35s}.pop{animation:pop .45s}.stars{position:fixed;inset:0;z-index:7;pointer-events:none;overflow:hidden}.star{position:absolute;font-size:42px;animation:fly 1s ease-out forwards}@keyframes fly{to{transform:translateY(-220px) rotate(360deg);opacity:0}}@keyframes pop{50%{transform:scale(1.14)}}@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+    .hidden{display:none!important}.hintBox{background:rgba(9,20,60,.72);border:4px solid rgba(255,255,255,.4);border-radius:28px;padding:16px 22px;font-size:clamp(18px,3vw,34px);font-weight:900}
+    @media(max-width:700px){.board{grid-template-columns:repeat(5,60px);grid-template-rows:repeat(4,60px)}.cell{font-size:32px}.card{width:110px;height:110px;font-size:50px}}
+  </style>
+</head>
+<body>
+  <video id="camera" autoplay muted playsinline></video>
+  <div id="shade"></div>
+  <div class="hud"><div class="badge">⭐ คะแนน <span id="score">0</span></div><div class="badge">🎯 <span id="missionName">วงล้อ</span></div></div>
+  <div id="game"></div><div id="pointer"></div><div id="toast">กำลังเปิดกล้อง...</div><div id="debug"></div><div class="stars" id="stars"></div>
+
+  <!-- MediaPipe: ใช้ฟรีผ่าน CDN สำหรับจับมือและท่าทาง -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const video=$('camera'), game=$('game'), pointer=$('pointer'), toast=$('toast'), scoreEl=$('score'), missionName=$('missionName'), debug=$('debug');
+    let score=0, mode='wheel', spinning=false, wheelDeg=0, used=[], currentMission=null;
+    let hand={x:.5,y:.5,seen:false,lastX:.5,wave:0,holdStart:0};
+    let pose={seen:false,lean:0,jump:false,crouch:false,bothHands:false,lastHipY:.5,lastCommand:0};
+    let lastWaveSpin=0, dragging=null;
+
+    const missions=[
+      {name:'Robot Maze', icon:'🤖', type:'maze'},
+      {name:'Diamond Run', icon:'💎', type:'maze'},
+      {name:'Pizza', icon:'🍕', type:'sequence', order:['🍞','🍅','🧀','🔥']},
+      {name:'Brush Teeth', icon:'🦷', type:'sequence', order:['🪥','🧴','😁','💧']},
+      {name:'Rocket', icon:'🚀', type:'twohands'},
+      {name:'Plant', icon:'🌱', type:'dragdrop', items:['🌱','🕳️','🪣']},
+      {name:'Toys Box', icon:'🧸', type:'dragdrop', items:['🧸','🚗','📦']},
+      {name:'Fruit Catch', icon:'🍎', type:'lean'},
+      {name:'Jump Star', icon:'⭐', type:'jump'},
+      {name:'Computer Start', icon:'💻', type:'sequence', order:['🔌','🔘','⌨️','💻']}
+    ];
+
+    /** พูดคำแนะนำภาษาไทยด้วย Web Speech API */
+    function speak(text){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='th-TH'; u.rate=.95; speechSynthesis.speak(u);}catch(e){} }
+    /** แสดงข้อความสั้นบนจอ */
+    function say(text, voice=false){ toast.textContent=text; if(voice) speak(text); }
+    /** เพิ่มคะแนนและเอฟเฟกต์ดาว */
+    function addScore(n=10){ score+=n; scoreEl.textContent=score; burstStars(); }
+    /** สร้างดาวกระเด็น */
+    function burstStars(){ for(let i=0;i<18;i++){ const s=document.createElement('div'); s.className='star'; s.textContent=['⭐','✨','🌟'][i%3]; s.style.left=(20+Math.random()*60)+'vw'; s.style.top=(45+Math.random()*35)+'vh'; $('stars').appendChild(s); setTimeout(()=>s.remove(),1000);} }
+    /** สุ่มภารกิจแบบไม่ซ้ำจนกว่าจะครบ */
+    function pickMission(){ if(used.length>=missions.length) used=[]; const left=missions.filter((_,i)=>!used.includes(i)); const m=left[Math.floor(Math.random()*left.length)]; used.push(missions.indexOf(m)); return m; }
+
+    /** วาดหน้าวงล้อเป็นหน้าแรก */
+    function showWheel(){ mode='wheel'; currentMission=null; missionName.textContent='วงล้อ'; game.innerHTML=`<div class="screen"><h1 class="title">Algorithm Spin Challenge</h1><div class="wheelWrap"><div class="pin">🔻</div><div id="wheel"></div></div><div class="hintBox">👋 โบกมือ เพื่อหมุนวงล้อ</div></div>`; say('โบกมือเพื่อหมุนวงล้อ', true); }
+
+    /** หมุนวงล้อแล้วเข้าเกมที่สุ่มได้ */
+    function spinWheel(){ if(spinning || mode!=='wheel') return; spinning=true; const m=pickMission(); currentMission=m; missionName.textContent=m.name; const wheel=$('wheel'); wheelDeg += 1440 + Math.floor(Math.random()*360); wheel.style.transform=`rotate(${wheelDeg}deg)`; say('กำลังสุ่มภารกิจ'); setTimeout(()=>{ spinning=false; startMission(m); },3200); }
+
+    /** เริ่มภารกิจตามชนิดของเกม */
+    function startMission(m){ mode=m.type; if(m.type==='maze') startMaze(m); if(m.type==='sequence') startSequence(m); if(m.type==='twohands') startTwoHands(m); if(m.type==='dragdrop') startDragDrop(m); if(m.type==='lean') startLean(m); if(m.type==='jump') startJump(m); }
+
+    let maze={x:0,y:3,dir:0,gems:0,map:[]};
+    /** เกมเขาวงกต: เอียงซ้าย/ขวาเพื่อเลี้ยว ก้มตัวเพื่อเดินหน้า กระโดดเพื่อเก็บ */
+    function startMaze(m){ maze={x:0,y:3,dir:0,gems:0,map:[['','','💎','','🏁'],['','🪨','','🪨',''],['','','💎','',''],['🤖','','🪨','','']]}; renderMaze(); say('เอียงซ้ายหรือขวาเพื่อเลี้ยว ก้มตัวเพื่อเดินหน้า เก็บเพชรแล้วไปธง', true); }
+    /** แสดงตารางเขาวงกต */
+    function renderMaze(){ let html=`<div class="screen"><h1 class="title">${currentMission.icon} ${currentMission.name}</h1><div class="sub">↔️ เอียงตัวเลี้ยว | ⬇️ ก้มตัวเดิน | 🦘 กระโดดเก็บ</div><div class="board">`; for(let y=0;y<4;y++){ for(let x=0;x<5;x++){ let v=maze.map[y][x]; let cls='cell'; if(v==='🪨') cls+=' wall'; if(v==='💎') cls+=' gem'; if(v==='🏁') cls+=' goal'; if(x===maze.x&&y===maze.y){v=['🤖➡️','🤖⬇️','🤖⬅️','🤖⬆️'][maze.dir]; cls+=' robot';} html+=`<div class="${cls}">${v}</div>`; }} html+='</div></div>'; game.innerHTML=html; }
+    /** รับคำสั่งท่าทางสำหรับเกมเขาวงกต */
+    function mazeCommand(cmd){ const now=Date.now(); if(now-pose.lastCommand<850) return; pose.lastCommand=now; if(cmd==='left') maze.dir=(maze.dir+3)%4; if(cmd==='right') maze.dir=(maze.dir+1)%4; if(cmd==='forward'){ const dx=[1,0,-1,0][maze.dir], dy=[0,1,0,-1][maze.dir]; const nx=maze.x+dx, ny=maze.y+dy; if(nx>=0&&nx<5&&ny>=0&&ny<4&&maze.map[ny][nx]!=='🪨'){ maze.x=nx; maze.y=ny; } else say('ติดสิ่งกีดขวาง ลองเลี้ยวก่อน'); }
+      if(cmd==='jump'){ if(maze.map[maze.y][maze.x]==='💎'){ maze.map[maze.y][maze.x]=''; maze.gems++; addScore(5); say('เก็บเพชรแล้ว'); }}
+      if(maze.map[maze.y][maze.x]==='🏁' && maze.gems>=1){ addScore(10); say('ผ่านด่าน เก่งมาก!', true); setTimeout(showWheel,1800); return; } renderMaze(); }
+
+    let seq=[];
+    /** เกมเรียงภาพ: ใช้นิ้วชี้ลากการ์ดเรียงลำดับ */
+    function startSequence(m){ seq=[...m.order].sort(()=>Math.random()-.5); renderSequence(); say('ใช้นิ้วชี้ลากภาพ เรียงขั้นตอนให้ถูกต้อง', true); }
+    /** วาดเกมเรียงภาพ */
+    function renderSequence(){ game.innerHTML=`<div class="screen"><h1 class="title">${currentMission.icon} ${currentMission.name}</h1><div class="sub">👆 ลากภาพเรียงจากซ้ายไปขวา</div><div class="cards" id="seqCards">${seq.map((e,i)=>`<div class="card draggable" data-i="${i}">${e}<small>${i+1}</small></div>`).join('')}</div><div class="hintBox">ชี้ค้างที่ภาพ แล้วลากไปสลับตำแหน่ง</div></div>`; }
+    /** ตรวจคำตอบเกมเรียงภาพ */
+    function checkSequence(){ const ok=seq.join('')===currentMission.order.join(''); if(ok){addScore(10); say('เรียงถูกแล้ว เก่งมาก!', true); setTimeout(showWheel,1600);} }
+
+    /** เกมชูสองมือปล่อยจรวด */
+    function startTwoHands(m){ game.innerHTML=`<div class="screen"><h1 class="title">🚀 Rocket</h1><div id="rocket" class="bigCenter">🚀</div><div class="hintBox">🙌 ชูสองมือ เพื่อปล่อยจรวด</div></div>`; say('ชูสองมือเพื่อปล่อยจรวด', true); }
+    /** เกมลากของไปเป้าหมาย */
+    function startDragDrop(m){ const items=[...m.items]; game.innerHTML=`<div class="screen"><h1 class="title">${m.icon} ${m.name}</h1><div class="sub">👆 ใช้นิ้วลากของไปไว้ในกรอบเป้าหมาย</div><div class="cards" id="dragArea">${items.map((e,i)=>`<div class="card draggable" data-i="${i}">${e}</div>`).join('')}<div class="card" id="dropTarget">🎯<small>เป้าหมาย</small></div></div></div>`; say('ใช้นิ้วลากของไปที่เป้าหมาย', true); }
+    /** เกมเอียงตัวซ้ายขวารับผลไม้ */
+    function startLean(m){ game.innerHTML=`<div class="screen"><h1 class="title">🍎 Fruit Catch</h1><div class="bigCenter" id="basket">🧺</div><div class="hintBox">เอียงซ้ายหรือขวา เพื่อรับผลไม้</div></div>`; say('เอียงตัวซ้ายหรือขวาเพื่อรับผลไม้', true); setTimeout(()=>{ if(mode==='lean'){addScore(10); say('รับผลไม้สำเร็จ!', true); setTimeout(showWheel,1500)}},7000); }
+    /** เกมกระโดดเก็บดาว */
+    function startJump(m){ game.innerHTML=`<div class="screen"><h1 class="title">⭐ Jump Star</h1><div class="bigCenter">⭐</div><div class="hintBox">🦘 กระโดดเบา ๆ เพื่อเก็บดาว</div></div>`; say('กระโดดเบา ๆ เพื่อเก็บดาว', true); }
+
+    /** อัปเดต pointer ปลายนิ้ว */
+    function updatePointer(){ if(hand.seen){ pointer.style.display='block'; pointer.style.left=(hand.x*innerWidth)+'px'; pointer.style.top=(hand.y*innerHeight)+'px'; } else pointer.style.display='none'; }
+    /** จัดการลากด้วยนิ้วชี้ โดยไม่ใช้เมาส์ */
+    function handleFingerDrag(){ if(!hand.seen || !(mode==='sequence'||mode==='dragdrop')) return; const x=hand.x*innerWidth, y=hand.y*innerHeight; const el=document.elementFromPoint(x,y); if(!dragging && el && el.classList && el.classList.contains('draggable')){ if(!hand.holdStart) hand.holdStart=Date.now(); if(Date.now()-hand.holdStart>450){ dragging=el; dragging.classList.add('pop'); say('ลากได้เลย'); }}
+      if(dragging){ dragging.style.position='fixed'; dragging.style.left=(x-70)+'px'; dragging.style.top=(y-70)+'px'; dragging.style.zIndex=20; const target=document.elementFromPoint(x,y); if(target && target!==dragging){ if(mode==='sequence' && target.classList.contains('draggable')){ const a=+dragging.dataset.i, b=+target.dataset.i; [seq[a],seq[b]]=[seq[b],seq[a]]; dragging=null; hand.holdStart=0; renderSequence(); checkSequence(); }
+          if(mode==='dragdrop' && target.id==='dropTarget'){ addScore(10); say('สำเร็จ เก่งมาก!', true); dragging=null; setTimeout(showWheel,1500); }
+        }}
+      if(!el || !el.classList || !el.classList.contains('draggable')) hand.holdStart=0; }
+
+    /** ประมวลผลมือจาก MediaPipe Hands */
+    function onHands(results){ hand.seen=false; if(results.multiHandLandmarks && results.multiHandLandmarks.length){ const lm=results.multiHandLandmarks[0]; const index=lm[8], wrist=lm[0]; hand.seen=true; hand.x=1-index.x; hand.y=index.y; const dx=Math.abs(hand.x-hand.lastX); if(dx>.09) hand.wave++; hand.lastX=hand.x; if(mode==='wheel' && hand.wave>8 && Date.now()-lastWaveSpin>2500){ lastWaveSpin=Date.now(); hand.wave=0; spinWheel(); } }
+      updatePointer(); handleFingerDrag(); }
+
+    /** ประมวลผลร่างกายจาก MediaPipe Pose */
+    function onPose(results){ if(!results.poseLandmarks) return; const lm=results.poseLandmarks; const nose=lm[0], lShoulder=lm[11], rShoulder=lm[12], lWrist=lm[15], rWrist=lm[16], lHip=lm[23], rHip=lm[24]; const midShoulder=(lShoulder.x+rShoulder.x)/2; const midHipY=(lHip.y+rHip.y)/2; pose.lean = nose.x-midShoulder; pose.bothHands = lWrist.y<lShoulder.y && rWrist.y<rShoulder.y; pose.crouch = nose.y > .48; pose.jump = midHipY < pose.lastHipY-.045; pose.lastHipY = midHipY;
+      debug.textContent=`lean:${pose.lean.toFixed(2)} crouch:${pose.crouch} jump:${pose.jump} hands:${pose.bothHands}`;
+      if(mode==='maze'){ if(pose.lean>.10) mazeCommand('left'); if(pose.lean<-.10) mazeCommand('right'); if(pose.crouch) mazeCommand('forward'); if(pose.jump) mazeCommand('jump'); }
+      if(mode==='twohands' && pose.bothHands){ addScore(10); $('rocket')?.classList.add('pop'); say('จรวดออกเดินทาง!', true); setTimeout(showWheel,1600); }
+      if(mode==='jump' && pose.jump){ addScore(10); say('เก็บดาวแล้ว!', true); setTimeout(showWheel,1400); }
+      if(mode==='lean'){ const basket=$('basket'); if(basket){ basket.style.transform=`translateX(${Math.max(-160,Math.min(160,pose.lean*1100))}px)`; }}
+    }
+
+    /** เปิดกล้องและเริ่ม MediaPipe */
+    async function startCamera(){ try{ const hands=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`}); hands.setOptions({maxNumHands:1,modelComplexity:0,minDetectionConfidence:.6,minTrackingConfidence:.55}); hands.onResults(onHands);
+        const posePipe=new Pose({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/pose/${f}`}); posePipe.setOptions({modelComplexity:0,smoothLandmarks:true,minDetectionConfidence:.55,minTrackingConfidence:.55}); posePipe.onResults(onPose);
+        const cam=new Camera(video,{onFrame:async()=>{ await hands.send({image:video}); await posePipe.send({image:video}); },width:1280,height:720}); await cam.start(); showWheel(); }catch(e){ console.error(e); say('เปิดกล้องไม่ได้: กรุณาอนุญาตกล้อง และเปิดผ่าน https หรือ GitHub Pages', true); game.innerHTML='<div class="screen"><h1 class="title">เปิดกล้องไม่ได้</h1><div class="hintBox">ต้องอนุญาตกล้อง และควรเปิดผ่าน GitHub Pages / https</div></div>'; }}
+
+    startCamera();
+  </script>
+</body>
+</html>
