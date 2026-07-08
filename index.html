@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithm Spin Challenge - Full Camera Pointer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- กล้องเต็มจอ: เด็กจะเห็นตัวเองเป็นพื้นหลัง -->
+  <video id="camera" autoplay playsinline muted></video>
+  <canvas id="motionCanvas" width="192" height="144"></canvas>
+
+  <!-- จุดชี้มือจากการเคลื่อนไหว -->
+  <div id="handPointer">👆</div>
+
+  <div class="shade"></div>
+
+  <div class="hud">
+    <div class="brand">🎡 Algorithm Spin Challenge</div>
+    <div class="score">⭐ <span id="score">0</span></div>
+    <div id="status">กำลังเปิดกล้อง...</div>
+  </div>
+
+  <main>
+    <!-- หน้าแรกเป็นวงล้อทันที -->
+    <section id="wheelScreen" class="screen active">
+      <div class="speech" id="speech">👋 โบกมือเพื่อหมุนวงล้อ</div>
+
+      <div class="wheel-wrap">
+        <div class="pointer-top">▼</div>
+        <div id="wheel" class="wheel">
+          <div class="slice s1">💎<br><span>เพชร</span></div>
+          <div class="slice s2">🏁<br><span>ธง</span></div>
+          <div class="slice s3">📦<br><span>กล่อง</span></div>
+          <div class="slice s4">🍎<br><span>ผลไม้</span></div>
+          <div class="slice s5">⭐<br><span>ดาว</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen">
+      <div class="mission-bar">
+        <div>
+          <h1 id="missionTitle">💎</h1>
+          <p id="missionText">ชี้ที่คำสั่ง แล้วค้างไว้</p>
+        </div>
+        <div id="commandBadge">👆 ชี้คำสั่ง</div>
+      </div>
+
+      <div id="board" class="board"></div>
+
+      <!-- ไม่มีเมาส์: ใช้มือชี้ค้างที่กล่องคำสั่ง -->
+      <div class="action-zone">
+        <div class="action-pad" data-action="left">↩️<span>เลี้ยวซ้าย</span></div>
+        <div class="action-pad main" data-action="walk">⬆️<span>เดิน</span></div>
+        <div class="action-pad" data-action="right">↪️<span>เลี้ยวขวา</span></div>
+        <div class="action-pad back" data-action="back">🎡<span>วงล้อ</span></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
