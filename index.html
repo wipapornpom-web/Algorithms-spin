@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithm Spin Challenge</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div>
+        <h1>Algorithm Spin Challenge</h1>
+        <p>โบกมือหมุนวงล้อ แล้วสั่งหุ่นยนต์ด้วยร่างกาย</p>
+      </div>
+      <div class="score-card">⭐ <span id="score">0</span></div>
+    </header>
+
+    <section class="camera-box">
+      <video id="camera" autoplay playsinline muted></video>
+      <canvas id="motionCanvas" width="160" height="120"></canvas>
+      <div id="motionStatus">กำลังเปิดกล้อง...</div>
+    </section>
+
+    <main>
+      <section id="wheelScreen" class="screen active">
+        <div class="robot-speech" id="robotSpeech">👋 โบกมือแรง ๆ เพื่อหมุนวงล้อ</div>
+        <div class="wheel-wrap">
+          <div id="wheel" class="wheel">
+            <div class="slice s1">💎<br>เก็บเพชร</div>
+            <div class="slice s2">🏁<br>ไปธง</div>
+            <div class="slice s3">📦<br>ส่งของ</div>
+            <div class="slice s4">🍎<br>เก็บผลไม้</div>
+            <div class="slice s5">⭐<br>ตามดาว</div>
+          </div>
+          <div class="pointer">▼</div>
+        </div>
+        <p class="hint">ไม่ต้องใช้เมาส์: โบกมือ = หมุน | ยกมือซ้าย/ขวา = เลี้ยว | เดินอยู่กับที่ = เดิน</p>
+      </section>
+
+      <section id="gameScreen" class="screen">
+        <div class="game-head">
+          <button id="backBtn" class="hidden-control" aria-label="กลับวงล้อ">กลับ</button>
+          <div>
+            <h2 id="missionTitle">ภารกิจ</h2>
+            <p id="missionText">สั่งหุ่นยนต์ให้ทำภารกิจ</p>
+          </div>
+          <div class="command-card" id="lastCommand">รอท่าทาง...</div>
+        </div>
+
+        <div class="board" id="board"></div>
+
+        <div class="control-help">
+          <div>🙋‍♀️ ยกมือซ้าย = เลี้ยวซ้าย</div>
+          <div>🙋‍♂️ ยกมือขวา = เลี้ยวขวา</div>
+          <div>🚶 เดินอยู่กับที่ = เดินหน้า</div>
+          <div>🙌 ชูสองมือ = กลับวงล้อ</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
