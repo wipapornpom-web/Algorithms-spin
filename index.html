@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithm Spin Challenge - Motion Only</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-bubbles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <main class="app">
+    <section class="hero">
+      <div class="logo-bot">🤖</div>
+      <div>
+        <p class="eyebrow">Motion Only Camera Edition</p>
+        <h1>Algorithm Spin Challenge</h1>
+        <p class="subtitle">เกมฝึกคิดเป็นลำดับ สำหรับ ป.1–ป.3</p>
+      </div>
+    </section>
+
+    <section class="status-panel">
+      <div id="cameraStatus" class="pill warn">กำลังเปิดกล้อง...</div>
+      <div id="gestureStatus" class="pill">ยืนห่างกล้อง 1.5–3 เมตร</div>
+      <div class="score-card">คะแนน <strong id="scoreText">0</strong></div>
+    </section>
+
+    <section class="game-layout">
+      <aside class="camera-card">
+        <h2>กล้องส่องคนเล่น</h2>
+        <div class="camera-wrap">
+          <video id="camera" autoplay playsinline muted></video>
+          <canvas id="motionCanvas" width="320" height="240"></canvas>
+          <div class="zone zone-left">ซ้าย</div>
+          <div class="zone zone-center">กระโดด/ยืนยัน</div>
+          <div class="zone zone-right">ขวา</div>
+        </div>
+        <div class="gesture-help">
+          <div><b>👋 โบกมือ</b><span>เริ่ม / หมุนวงล้อ</span></div>
+          <div><b>⬅️ ขยับซ้าย</b><span>เลือกข้อก่อน</span></div>
+          <div><b>➡️ ขยับขวา</b><span>เลือกข้อถัดไป</span></div>
+          <div><b>🦘 กระโดด</b><span>ยืนยันคำตอบ</span></div>
+        </div>
+      </aside>
+
+      <section class="play-card">
+        <div id="homeScreen" class="screen active">
+          <h2>ไม่ต้องใช้เมาส์</h2>
+          <p>อนุญาตกล้อง แล้ว <b>โบกมือซ้าย-ขวา</b> เพื่อเริ่มเกม</p>
+          <div class="big-icons">👋 🤖 🎡 ⭐</div>
+        </div>
+
+        <div id="wheelScreen" class="screen">
+          <h2>วงล้อสุ่มภารกิจ</h2>
+          <div class="wheel-shell">
+            <div id="wheel" class="wheel">
+              <span>Robot</span><span>Debug</span><span>Order</span><span>Treasure</span><span>Rocket</span>
+            </div>
+            <div class="pointer">▼</div>
+          </div>
+          <p id="wheelHint">โบกมือเพื่อหมุนวงล้อ</p>
+        </div>
+
+        <div id="missionScreen" class="screen">
+          <div class="mission-head">
+            <div>
+              <p class="eyebrow">ภารกิจ</p>
+              <h2 id="missionTitle">Mission</h2>
+            </div>
+            <div id="missionIcon" class="mission-icon">🤖</div>
+          </div>
+          <p id="missionQuestion" class="question"></p>
+          <div id="options" class="options"></div>
+          <p class="hint">ขยับซ้าย/ขวาเพื่อเลื่อนคำตอบ • กระโดดเพื่อยืนยัน</p>
+        </div>
+
+        <div id="resultScreen" class="screen">
+          <div id="resultIcon" class="result-icon">⭐</div>
+          <h2 id="resultTitle">เยี่ยมมาก!</h2>
+          <p id="resultText"></p>
+          <p class="hint">โบกมือเพื่อไปภารกิจต่อไป</p>
+        </div>
+
+        <div id="leaderboardScreen" class="screen">
+          <h2>🏆 คะแนนสูงสุด</h2>
+          <ol id="leaderboard"></ol>
+          <p class="hint">โบกมือเพื่อเล่นใหม่</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="stars" class="stars" aria-hidden="true"></div>
+  <script src="script.js"></script>
+</body>
+</html>
