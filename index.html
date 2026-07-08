@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithm Spin Challenge</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="animated-bg" aria-hidden="true">
+    <span class="gear g1">⚙️</span><span class="gear g2">🤖</span><span class="gear g3">⭐</span><span class="gear g4">💎</span>
+  </div>
+
+  <main class="app">
+    <section id="homeScreen" class="screen active home-screen">
+      <div class="logo-card bounce-in">
+        <div class="robot-logo">🤖</div>
+        <h1>Algorithm<br><span>Spin Challenge</span></h1>
+        <p>เกมฝึกคิดเป็นลำดับ สำหรับนักเรียน ป.1–ป.3</p>
+      </div>
+      <div class="menu-buttons">
+        <button class="big-btn primary motion-command" id="startBtn">👋 โบกมือเพื่อเริ่มเกม</button>
+        <button class="big-btn motion-command" id="howBtn">📖 วิธีเล่น</button>
+        <button class="big-btn motion-command" id="leaderBtn">🏆 คะแนนสูงสุด</button>
+      </div>
+    </section>
+
+    <section id="howScreen" class="screen panel-screen">
+      <div class="panel">
+        <h2>📖 วิธีเล่น</h2>
+        <p>หมุนวงล้อเพื่อสุ่มภารกิจ จากนั้นเรียงขั้นตอนหรือเลือกคำตอบให้ถูกต้อง ทุกภารกิจคือการฝึก “อัลกอริทึม” หรือการคิดเป็นลำดับขั้นตอน</p>
+        <ul>
+          <li>ตอบถูกได้ +10 คะแนน</li>
+          <li>ตอบผิดจะแสดงเฉลย และให้ลองใหม่</li>
+          <li>เล่นครบ 12 ภารกิจ จะสรุปคะแนนรวม</li>
+          <li>โหมดไม่สัมผัสจอ: เปิดกล้อง แล้วใช้โบกมือ ยกมือ หรือกระโดดแทนการแตะจอ</li>
+        </ul>
+        <button class="big-btn primary backHome">กลับหน้าแรก</button>
+      </div>
+    </section>
+
+    <section id="leaderScreen" class="screen panel-screen">
+      <div class="panel">
+        <h2>🏆 คะแนนสูงสุด</h2>
+        <div id="leaderboardList" class="leaderboard-list"></div>
+        <div class="row-actions">
+          <button class="big-btn small" id="resetScoresBtn">รีเซ็ตคะแนน</button>
+          <button class="big-btn primary small backHome">กลับหน้าแรก</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="spinScreen" class="screen game-screen">
+      <header class="topbar">
+        <button class="icon-btn" id="homeBtn">🏠</button>
+        <div class="score-box">คะแนน: <strong id="scoreText">0</strong></div>
+        <div class="score-box">เหลือ: <strong id="leftText">12</strong></div>
+      </header>
+      <div class="wheel-wrap">
+        <div id="wheel" class="wheel"></div>
+        <div class="wheel-pointer">▼</div>
+      </div>
+      <h2 id="spinTitle">หมุนวงล้อสุ่มภารกิจ</h2>
+      <p id="spinHint">ภารกิจจะไม่ซ้ำ จนกว่าจะเล่นครบทั้งหมด</p>
+      <button class="big-btn primary motion-command" id="spinBtn">👋 โบกมือเพื่อหมุนวงล้อ</button>
+    </section>
+
+    <section id="missionScreen" class="screen game-screen">
+      <header class="topbar">
+        <button class="icon-btn" id="backToSpinBtn">🎡</button>
+        <div class="score-box">คะแนน: <strong id="missionScoreText">0</strong></div>
+        <div class="timer" id="timerBox" hidden>⏱ <strong id="timeText">30</strong></div>
+      </header>
+      <div class="mission-card">
+        <div class="mission-icon" id="missionIcon">🤖</div>
+        <h2 id="missionTitle">Mission</h2>
+        <p id="missionDesc"></p>
+        <div id="mazeArea" class="maze-area"></div>
+        <div id="taskArea" class="task-area"></div>
+        <div class="feedback" id="feedbackBox"></div>
+        <div class="row-actions">
+          <button class="big-btn primary small motion-command" id="checkBtn">🙌 ชูสองมือ / กระโดด = ตรวจคำตอบ</button>
+          <button class="big-btn small motion-command" id="hintBtn">🙆 กางแขน = เฉลย</button>
+          <button class="big-btn small motion-command" id="retryBtn">🔁 สะบัดมือแรง = ลองใหม่</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="finishScreen" class="screen panel-screen">
+      <div class="panel celebration-panel">
+        <div class="robot-logo">🎉</div>
+        <h2>จบเกมแล้ว!</h2>
+        <p>คะแนนรวมของหนูคือ</p>
+        <div class="final-score" id="finalScore">0</div>
+        <label class="name-label">ใส่ชื่อผู้เล่น</label>
+        <input id="playerName" class="name-input" maxlength="18" placeholder="เช่น น้องพิม" />
+        <button class="big-btn primary" id="saveScoreBtn">บันทึกคะแนน</button>
+        <button class="big-btn" id="playAgainBtn">เล่นใหม่</button>
+      </div>
+    </section>
+  </main>
+
+
+  <aside class="motion-panel" id="motionPanel" aria-label="แผงควบคุมแบบไม่สัมผัสจอ">
+    <div class="motion-head">
+      <span>🖐️ โหมดไม่สัมผัสจอ</span>
+      <button class="big-btn small" id="motionToggleBtn">📷 กล้องผู้เล่น</button>
+    </div>
+    <div class="motion-video-wrap">
+      <video id="motionVideo" autoplay playsinline muted></video>
+      <canvas id="motionCanvas" width="320" height="240"></canvas>
+    </div>
+    <p class="motion-status" id="motionStatus">กำลังเตรียมกล้อง: เกมนี้ไม่ใช้เมาส์ ให้กดอนุญาตกล้องจากเบราว์เซอร์เมื่อระบบถาม</p>
+    <div class="motion-gesture">
+      <span>👋 โบกมือซ้าย-ขวา = เริ่มเกม / หมุนวงล้อ</span>
+      <span>⬅️➡️ ขยับตัวหรือมือซ้าย/ขวา = เลื่อนตัวเลือก</span>
+      <span>🙋 ยกมือสูง = เลือกคำตอบที่กรอบสีเหลือง</span>
+      <span>🙌 ชูสองมือ หรือ 🦘 กระโดด = ตรวจคำตอบ</span>
+    </div>
+  </aside>
+  <div class="motion-cursor" id="motionCursor"></div>
+
+  <div id="starsLayer" class="stars-layer" aria-hidden="true"></div>
+  <script src="script.js"></script>
+</body>
+</html>
