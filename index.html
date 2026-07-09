@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Algorithm Spin Challenge - Finger Drag</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <video id="camera" autoplay playsinline muted></video>
+  <canvas id="mirrorCanvas" aria-hidden="true"></canvas>
+  <canvas id="gameCanvas" aria-label="Algorithm Spin Challenge"></canvas>
+
+  <div id="topBar">
+    <div class="badge">⭐ คะแนน <span id="scoreText">0</span></div>
+    <div class="badge">🎯 <span id="modeText">โบกมือหมุนวงล้อ</span></div>
+  </div>
+
+  <div id="messageBox">
+    <div class="robot">🤖</div>
+    <div id="messageText">กำลังเปิดกล้อง...</div>
+  </div>
+
+  <div id="loadingPanel">
+    <div class="loader"></div>
+    <h1>Algorithm Spin Challenge</h1>
+    <p>กรุณาอนุญาตใช้กล้อง แล้วโบกมือเพื่อหมุนวงล้อ</p>
+  </div>
+
+  <!-- MediaPipe Hands ฟรีจาก Google ใช้สำหรับตรวจจับปลายนิ้ว -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
